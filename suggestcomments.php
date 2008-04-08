@@ -3,8 +3,8 @@
 Plugin Name: Suggest Comments
 Plugin URI: http://blog.quickes-wohnzimmer.de/suggestcomments
 Description: Suggest some comments to your lazy visitors :)  
-Version: 0.2
-Author: Rene Springborn
+Version: 0.3
+Author: quicke
 Author URI: http://blog.quickes-wohnzimmer.de
 
   Copyright 2007  Rene Springborn  (email : plugins at quickes-wohnzimmer.de)
@@ -170,9 +170,9 @@ function suggestcomment_install () {
 
 			$welcome_text[0] = "Howdy!";
 			$welcome_text[1] = "You made my day!";
-			$welcome_text[2] = "Bravissimo!";
+			$welcome_text[2] = "Yesss!";
 			$welcome_text[3] = "Who cares?";
-			$welcome_text[4] = "Are you alright?";
+			$welcome_text[4] = "Are you o.k.?";
 
 			foreach ($welcome_text as $no=>$text){
 				suggestcomment_add_comment($text);

@@ -4,7 +4,7 @@ Donate link: http://blog.quickes-wohnzimmer.de/
 Tags: comments, fun, survey
 Requires at least: 2.0.2
 Tested up to: 2.5
-Stable tag: 0.2
+Stable tag: 0.3
 
 Suggest some comments to your lazy visitors. Can also be used as a simple survey tool on the comment form. Inspired by <a href="http://www.vorspeisenplatte.de">Vorspeisenplatte</a> and <a href="http://riesenmaschine.de/">Riesenmaschine</a> 
 
@@ -14,8 +14,8 @@ This plugin is just for fun. Sometimes a visitor would like to say that he likes
 
 == Installation ==
 
-1. Upload `suggestcomments.zip` to the `/wp-content/plugins/` directory
-1. Extract the file to `/wp-content/plugins/suggestcomments`
+1. Upload the zip file to the `/wp-content/plugins/` directory
+1. Extract the file
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Configure the phrases and a short introduction under 'Settings / Suggest Comments'
 1. The suggestions will automatically appear on the bottom of the comment form
@@ -24,6 +24,6 @@ This plugin is just for fun. Sometimes a visitor would like to say that he likes
 
 = Where to give feedback? =
 
-Simply visit my [blog](http://wordpress.org/ "quickes wohnzimmer") ;)
+Simply visit my [blog](http://blog.quickes-wohnzimmer.de/ "quickes wohnzimmer") ;)
 
 == Screenshots ==
