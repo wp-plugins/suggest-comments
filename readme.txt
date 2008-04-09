@@ -4,7 +4,7 @@ Donate link: http://blog.quickes-wohnzimmer.de/
 Tags: comments, fun, survey
 Requires at least: 2.0.2
 Tested up to: 2.5
-Stable tag: 0.5
+Stable tag: 0.6
 
 Suggest some comments to your lazy visitors. Can also be used as a simple survey tool on the comment form. 
 

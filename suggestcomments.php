@@ -3,7 +3,7 @@
 Plugin Name: Suggest Comments
 Plugin URI: http://blog.quickes-wohnzimmer.de/suggestcomments
 Description: Suggest some comments to your lazy visitors :)  
-Version: 0.5
+Version: 0.6
 Author: quicke
 Author URI: http://blog.quickes-wohnzimmer.de
 
@@ -72,8 +72,14 @@ function suggestcomment_options_subpanel() {
 
 		//update field information in database
 		if (isset($_POST['submit'])) {
-			 global $wpdb;
- 	 			$new_comment = $_POST['suggestcomment_new_comment'];
+			  global $wpdb;
+ 	 			$commentlist = suggestcomment_get_comments();
+				 foreach ($commentlist as $sugcomment){
+				  //$formfieldname ="suggestcomment_".$sugcomment->comment_id; 
+					//$updatetext=stripslashes($_POST["suggestcomment_".$sugcomment->comment_id;]);
+					suggestcomment_update_comment($sugcomment->comment_id,$_POST["suggestcomment_".$sugcomment->comment_id]);
+				 }				
+				$new_comment = $_POST['suggestcomment_new_comment'];
 				if ($new_comment<>""){suggestcomment_add_comment($new_comment);}	
 				$suggestcomment_describe = stripslashes($_POST['suggestcomment_describe']);
 				update_option('suggestcomment_describe', $wpdb->escape($suggestcomment_describe));
@@ -153,7 +159,6 @@ $suggestcomment_describe = stripslashes(get_option('suggestcomment_describe'));
 
 echo $suggestcomment_describe."\n<ul>\n";
 foreach ($commentlist as $sugcomment){
-// echo "<input type=\"radio\" name=\"suggestcomment_comment\" value=\"".stripslashes($sugcomment->comment_text)."\" onchange=\"suggestcomment_replace_comment(this.value)\"> ".stripslashes($sugcomment->comment_text."<br>");
  echo "<li><a href=\"#respond\" onclick=\"suggestcomment_replace_comment('".stripslashes($sugcomment->comment_text)."')\">".stripslashes($sugcomment->comment_text)."</a></li>\n";
 }
 echo "</ul>";
@@ -216,6 +221,14 @@ function suggestcomment_delete_comment($id){
  global $wpdb;
  $table_name = $wpdb->prefix . "suggestcomment";
  $sql = "DELETE FROM $table_name WHERE comment_id='$id'";
+ $results = $wpdb->query($sql);
+}
+
+//update comment
+function suggestcomment_update_comment($id,$text){
+ global $wpdb;
+ $table_name = $wpdb->prefix . "suggestcomment";
+ $sql = "UPDATE $table_name SET comment_text='".$wpdb->escape($text)."' WHERE comment_id='$id'";
  $results = $wpdb->query($sql);
 }
 
