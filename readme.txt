@@ -4,9 +4,9 @@ Donate link: http://blog.quickes-wohnzimmer.de/
 Tags: comments, fun, survey
 Requires at least: 2.0.2
 Tested up to: 2.5
-Stable tag: 0.3
+Stable tag: 0.5
 
-Suggest some comments to your lazy visitors. Can also be used as a simple survey tool on the comment form. Inspired by <a href="http://www.vorspeisenplatte.de">Vorspeisenplatte</a> and <a href="http://riesenmaschine.de/">Riesenmaschine</a> 
+Suggest some comments to your lazy visitors. Can also be used as a simple survey tool on the comment form. 
 
 == Description ==
 
