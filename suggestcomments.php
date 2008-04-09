@@ -3,7 +3,7 @@
 Plugin Name: Suggest Comments
 Plugin URI: http://blog.quickes-wohnzimmer.de/suggestcomments
 Description: Suggest some comments to your lazy visitors :)  
-Version: 0.4
+Version: 0.5
 Author: quicke
 Author URI: http://blog.quickes-wohnzimmer.de
 
@@ -65,7 +65,7 @@ add_options_page('suggestcomment', 'Suggest Comments', '8', basename(__FILE__), 
 function suggestcomment_options_subpanel() {
 		// database version
 		$suggestcomment_db_version = get_option('suggestcomment_db_version');
-		//
+		// prompt
 		$suggestcomment_prompt = get_option('suggestcomment_prompt');
 		//short introduction above the given comments 
 		$suggestcomment_describe = stripslashes(get_option('suggestcomment_describe'));
@@ -86,15 +86,6 @@ function suggestcomment_options_subpanel() {
 			 $id = $_REQUEST['delete'];
 			 suggestcomment_delete_comment($id);
 		}
-		
-		
-//add admin menu
-function suggestcomment_add_options_to_admin() {
-    if (function_exists('add_options_page')) {
-add_options_page('suggestcomment', 'Suggest Comments', '8', basename(__FILE__), 'suggestcomment_options_subpanel');
-    }
- }
-		
 				
 //draw admin menu
 	?>

@@ -4,9 +4,9 @@ Donate link: http://blog.quickes-wohnzimmer.de/
 Tags: comments, fun, survey
 Requires at least: 2.0.2
 Tested up to: 2.5
-Stable tag: 0.4
+Stable tag: 0.5
 
-Suggest some comments to your lazy visitors. Can also be used as a simple survey tool on the comment form. Inspired by <a href="http://www.vorspeisenplatte.de">Vorspeisenplatte</a> and <a href="http://riesenmaschine.de/">Riesenmaschine</a> 
+Suggest some comments to your lazy visitors. Can also be used as a simple survey tool on the comment form. 
 
 == Description ==
 
@@ -25,12 +25,5 @@ This plugin is just for fun. Sometimes a visitor would like to say that he likes
 = Where to give feedback? =
 
 Simply visit my [blog](http://blog.quickes-wohnzimmer.de/ "quickes wohnzimmer") ;)
-
-= What are the new features in version 0.4? =
-
-*Admin option for message prompt before changing a comment
-*Replaced radio buttons input with links for the reason of an IE bug
- 
-
 
 == Screenshots ==
