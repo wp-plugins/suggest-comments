@@ -3,11 +3,11 @@
 Plugin Name: Suggest Comments
 Plugin URI: http://blog.quickes-wohnzimmer.de/suggestcomments
 Description: Suggest some comments to your lazy visitors :)  
-Version: 0.3
+Version: 0.7
 Author: quicke
 Author URI: http://blog.quickes-wohnzimmer.de
 
-  Copyright 2007  Rene Springborn  (email : plugins at quickes-wohnzimmer.de)
+  Copyright 2008  Rene Springborn  (email : plugins at quickes-wohnzimmer.de)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,11 @@ Author URI: http://blog.quickes-wohnzimmer.de
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+if ($wp_version >= '2.3') {
+       require_once(ABSPATH.'wp-admin/includes/upgrade.php');
+} else {
+       require_once(ABSPATH.'wp-admin/upgrade-functions.php') ;
+}
 
 add_action('wp_print_scripts', 'suggestcomment_js_header' );
 add_action('comment_form','suggestcomment_form_items');
@@ -32,16 +36,30 @@ add_action('admin_menu', 'suggestcomment_add_options_to_admin');
 
 register_activation_hook(__FILE__,'suggestcomment_activate');
 
-//js for replacing the current comment with a suggested one
+/*additional javascript for comment form
+suggestcomment_replace_comment(comment)
+replacing the current comment with a suggested one
+*/
+
 function suggestcomment_js_header(){
+ $suggestcomment_prompt = get_option('suggestcomment_prompt');
+ $commentlist = suggestcomment_get_comments();
 ?>
 <script type="text/javascript">
 //<![CDATA[
-function suggestcomment_replace_comment(comment)
+function suggestcomment_replace_comment(commentid)
 {
-replaceIt = confirm("Current comment will be replaced.");
- if (replaceIt==true){ 
- 		window.document.forms['commentform'].elements['comment-text'].value=comment
+var commenttext = new Array ();
+<?php 
+foreach ($commentlist as $sugcomment){
+echo "commenttext[$sugcomment->comment_id]=\"$sugcomment->comment_text\";\n";
+}
+?>
+replaceIt = confirm("<?php echo $suggestcomment_prompt;?>");
+ if (replaceIt==true){
+    commentForm=window.document.forms['commentform'];
+		if (commentForm.elements['comment-text']){commentForm.elements['comment-text'].value=commenttext[commentid]};
+		if (commentForm.elements['comment']){commentForm.elements['comment'].value=commenttext[commentid]};
 		} 
 }
 //]]>
@@ -60,16 +78,24 @@ add_options_page('suggestcomment', 'Suggest Comments', '8', basename(__FILE__), 
 function suggestcomment_options_subpanel() {
 		// database version
 		$suggestcomment_db_version = get_option('suggestcomment_db_version');
+		// prompt
+		$suggestcomment_prompt = get_option('suggestcomment_prompt');
 		//short introduction above the given comments 
 		$suggestcomment_describe = stripslashes(get_option('suggestcomment_describe'));
 
 		//update field information in database
 		if (isset($_POST['submit'])) {
-			 global $wpdb;
- 	 			$new_comment = $_POST['suggestcomment_new_comment'];
+			  global $wpdb;
+ 	 			$commentlist = suggestcomment_get_comments();
+				 foreach ($commentlist as $sugcomment){
+					suggestcomment_update_comment($sugcomment->comment_id,$_POST["suggestcomment_".$sugcomment->comment_id]);
+				 }				
+				$new_comment = $_POST['suggestcomment_new_comment'];
 				if ($new_comment<>""){suggestcomment_add_comment($new_comment);}	
 				$suggestcomment_describe = stripslashes($_POST['suggestcomment_describe']);
 				update_option('suggestcomment_describe', $wpdb->escape($suggestcomment_describe));
+				$suggestcomment_prompt = stripslashes($_POST['suggestcomment_prompt']);
+				update_option('suggestcomment_prompt', $wpdb->escape($suggestcomment_prompt));
 				}
 		
 		// is there a comment to be deleted?
@@ -110,6 +136,7 @@ function suggestcomment_options_subpanel() {
 
 ?>
 			<tr class='alternate author-self status-future'><td><input size="80" type= "text" name="suggestcomment_new_comment"></td><td><div style="text-align: center">(new entry)</div></td></tr>
+			<tr class='alternate author-self status-future'><td><input size="80" type= "text" name="suggestcomment_prompt" value="<?php echo $suggestcomment_prompt; ?>"></td><td><div style="text-align: center">(prompt before replacing)</div></td></tr>
 			<tr class='alternate author-self status-future'><td><input size="80" type= "text" name="suggestcomment_describe" value="<?php echo $suggestcomment_describe; ?>"></td><td><div style="text-align: center">(show above selection)</div></td></tr>
 					</tbody>
 				</table>
@@ -141,10 +168,12 @@ function suggestcomment_form_items()
 $commentlist = suggestcomment_get_comments();
 $suggestcomment_describe = stripslashes(get_option('suggestcomment_describe'));
 
-echo $suggestcomment_describe."<br>";
+echo $suggestcomment_describe."\n<ul>\n";
 foreach ($commentlist as $sugcomment){
- echo "<input type=\"radio\" name=\"suggestcomment_comment\" value=\"".stripslashes($sugcomment->comment_text)."\" onchange=\"suggestcomment_replace_comment(this.value)\"> ".stripslashes($sugcomment->comment_text."<br>");
+// echo "<li><a href=\"#respond\" onclick=\"suggestcomment_replace_comment('".$sugcomment->comment_text."')\">".stripslashes($sugcomment->comment_text)."</a></li>\n";
+ echo "<li><a href=\"#respond\" onclick=\"suggestcomment_replace_comment('".$sugcomment->comment_id."')\">".stripslashes($sugcomment->comment_text)."</a></li>\n";
 }
+echo "</ul>";
 }
 
 //plugin installation
@@ -154,9 +183,11 @@ function suggestcomment_install () {
 
    $suggestcomment_db_version = "0.2";
 	 $suggestcomment_describe = "Suggested comments<br><small>No own opinion? Choose one of mine ;)</small>";
-
+   $suggestcomment_prompt = "Replace current comment text?";
+	 
 	 add_option('suggestcomment_db_version', $suggestcomment_db_version,'Database version');
 	 add_option('suggestcomment_describe', $wpdb->escape($suggestcomment_describe),'Description');
+ 	 add_option('suggestcomment_prompt', $wpdb->escape($suggestcomment_prompt),'Prompt');
   
 	
    if($wpdb->get_var("show tables like '$table_name'") != $table_name) {
@@ -202,6 +233,14 @@ function suggestcomment_delete_comment($id){
  global $wpdb;
  $table_name = $wpdb->prefix . "suggestcomment";
  $sql = "DELETE FROM $table_name WHERE comment_id='$id'";
+ $results = $wpdb->query($sql);
+}
+
+//update comment
+function suggestcomment_update_comment($id,$text){
+ global $wpdb;
+ $table_name = $wpdb->prefix . "suggestcomment";
+ $sql = "UPDATE $table_name SET comment_text='".$wpdb->escape($text)."' WHERE comment_id='$id'";
  $results = $wpdb->query($sql);
 }
 
