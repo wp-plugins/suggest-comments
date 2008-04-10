@@ -3,7 +3,7 @@
 Plugin Name: Suggest Comments
 Plugin URI: http://blog.quickes-wohnzimmer.de/suggestcomments
 Description: Suggest some comments to your lazy visitors :)  
-Version: 0.6
+Version: 0.7
 Author: quicke
 Author URI: http://blog.quickes-wohnzimmer.de
 
@@ -24,7 +24,11 @@ Author URI: http://blog.quickes-wohnzimmer.de
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+if ($wp_version >= '2.3') {
+       require_once(ABSPATH.'wp-admin/includes/upgrade.php');
+} else {
+       require_once(ABSPATH.'wp-admin/upgrade-functions.php') ;
+}
 
 add_action('wp_print_scripts', 'suggestcomment_js_header' );
 add_action('comment_form','suggestcomment_form_items');
@@ -39,14 +43,23 @@ replacing the current comment with a suggested one
 
 function suggestcomment_js_header(){
  $suggestcomment_prompt = get_option('suggestcomment_prompt');
+ $commentlist = suggestcomment_get_comments();
 ?>
 <script type="text/javascript">
 //<![CDATA[
-function suggestcomment_replace_comment(comment)
+function suggestcomment_replace_comment(commentid)
 {
+var commenttext = new Array ();
+<?php 
+foreach ($commentlist as $sugcomment){
+echo "commenttext[$sugcomment->comment_id]=\"$sugcomment->comment_text\";\n";
+}
+?>
 replaceIt = confirm("<?php echo $suggestcomment_prompt;?>");
- if (replaceIt==true){ 
- 		window.document.forms['commentform'].elements['comment-text'].value=comment
+ if (replaceIt==true){
+    commentForm=window.document.forms['commentform'];
+		if (commentForm.elements['comment-text']){commentForm.elements['comment-text'].value=commenttext[commentid]};
+		if (commentForm.elements['comment']){commentForm.elements['comment'].value=commenttext[commentid]};
 		} 
 }
 //]]>
@@ -75,8 +88,6 @@ function suggestcomment_options_subpanel() {
 			  global $wpdb;
  	 			$commentlist = suggestcomment_get_comments();
 				 foreach ($commentlist as $sugcomment){
-				  //$formfieldname ="suggestcomment_".$sugcomment->comment_id; 
-					//$updatetext=stripslashes($_POST["suggestcomment_".$sugcomment->comment_id;]);
 					suggestcomment_update_comment($sugcomment->comment_id,$_POST["suggestcomment_".$sugcomment->comment_id]);
 				 }				
 				$new_comment = $_POST['suggestcomment_new_comment'];
@@ -159,7 +170,8 @@ $suggestcomment_describe = stripslashes(get_option('suggestcomment_describe'));
 
 echo $suggestcomment_describe."\n<ul>\n";
 foreach ($commentlist as $sugcomment){
- echo "<li><a href=\"#respond\" onclick=\"suggestcomment_replace_comment('".stripslashes($sugcomment->comment_text)."')\">".stripslashes($sugcomment->comment_text)."</a></li>\n";
+// echo "<li><a href=\"#respond\" onclick=\"suggestcomment_replace_comment('".$sugcomment->comment_text."')\">".stripslashes($sugcomment->comment_text)."</a></li>\n";
+ echo "<li><a href=\"#respond\" onclick=\"suggestcomment_replace_comment('".$sugcomment->comment_id."')\">".stripslashes($sugcomment->comment_text)."</a></li>\n";
 }
 echo "</ul>";
 }
