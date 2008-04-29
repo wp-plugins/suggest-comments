@@ -4,7 +4,7 @@ Donate link: http://blog.quickes-wohnzimmer.de/
 Tags: comments, fun, survey
 Requires at least: 2.0.2
 Tested up to: 2.5
-Stable tag: 0.7
+Stable tag: 0.8
 
 Suggest some comments to your lazy visitors. Can also be used as a simple survey tool on the comment form. 
 
@@ -14,10 +14,14 @@ This plugin is just for fun. Sometimes a visitor would like to say that he likes
 
 It's still in developement. So check for new releases daily!
 
+New features in 0.8
+Enable/disable for posts and pages seperately
+Randomize comment list
+
 Fixed in 0.7
-* quotes can be used now
-* implemented support for "comment" and "comment-text" textarea id's
-* activation might have caused problems with WP version < 2.3
+quotes can be used now
+implemented support for "comment" and "comment-text" textarea id's
+activation might have caused problems with WP version < 2.3
 
 == Installation ==
 
